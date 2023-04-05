@@ -6,19 +6,37 @@ import { Link } from "react-router-dom";
 const TodoList = () => {
   const [todos, setTodos] = useState([]);
   const [singleTask, setSingleTask] = useState({});
-  const [todoId, setTodoId] = useState("");
+  const [toast, setToast] = useState(false);
+
+  const notification = (
+    <div className="toast toast-top toast-end">
+      <div className="alert alert-error">
+        <div>
+          <span>Task Deleted</span>
+        </div>
+      </div>
+    </div>
+  );
 
   useEffect(() => {
     fetch("https://hellwet-todo-backend.onrender.com/todos")
       .then((res) => res.json())
       .then((data) => setTodos(data));
-  }, [singleTask]);
+  }, [singleTask, todos]);
 
   const handleDelete = (id) => {
     fetch(`http://localhost:5000/todo/${id}`, {
       method: "DELETE",
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if (res.status === 200) {
+          res.json();
+          setToast(true);
+          setTimeout(() => {
+            setToast(false);
+          }, 3000);
+        }
+      })
       .then((data) => console.log(data));
   };
 
@@ -135,6 +153,7 @@ const TodoList = () => {
         </div>
       </div>
       {/* ----- Delete modal end ----- */}
+      {toast && notification}
     </div>
   );
 };
