@@ -1,4 +1,5 @@
 import React from "react";
+import axios from "axios";
 import {
   useSignInWithEmailAndPassword,
   useSignInWithGoogle,
@@ -21,6 +22,23 @@ const Login = () => {
     const email = e.target.email.value;
     const password = e.target.password.value;
     signInWithEmailAndPassword(email, password);
+    // const { data } = await axios.post(
+    //   "https://hellwet-todo-backend.onrender.com/login",
+    //   { email }
+    // );
+    // localStorage.setItem("accessToken", data.accessToken);
+
+    fetch("https://hellwet-todo-backend.onrender.com/login", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({ email: email }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        localStorage.setItem("accessToken", data.accessToken);
+      });
   };
   if (loading) {
     return "";

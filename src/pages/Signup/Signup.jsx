@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 import {
   useCreateUserWithEmailAndPassword,
   useSignInWithGoogle,
@@ -14,13 +15,18 @@ const Signup = () => {
   const [signInWithGoogle] = useSignInWithGoogle(auth);
   const [passError, setPassError] = useState("");
 
-  const handleSignup = (e) => {
+  const handleSignup = async (e) => {
     e.preventDefault();
     const email = e.target.email.value;
     const password = e.target.password.value;
     const cPassword = e.target.cPassword.value;
     if (password === cPassword) {
-      createUserWithEmailAndPassword(email, password);
+      await createUserWithEmailAndPassword(email, password);
+      const { data } = await axios.post(
+        "https://hellwet-todo-backend.onrender.com/login",
+        { email }
+      );
+      localStorage.setItem("accessToken", data.accessToken);
       setPassError("");
     } else {
       setPassError("Password and Confirm Password Not Same");

@@ -2,9 +2,13 @@ import React, { useEffect, useState } from "react";
 import { RiDeleteBinLine } from "react-icons/ri";
 import { CiEdit } from "react-icons/ci";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import { useSignOut } from "react-firebase-hooks/auth";
+import auth from "../../../firebase.init";
 
 const TodoList = () => {
   const [todos, setTodos] = useState([]);
+  const [signOut] = useSignOut(auth);
   const [singleTask, setSingleTask] = useState({});
   const [toast, setToast] = useState(false);
 
@@ -19,9 +23,22 @@ const TodoList = () => {
   );
 
   useEffect(() => {
-    fetch("https://hellwet-todo-backend.onrender.com/todos")
-      .then((res) => res.json())
-      .then((data) => setTodos(data));
+    const allTodo = async () => {
+      try {
+        const { data } = await axios.get(
+          "https://hellwet-todo-backend.onrender.com/todos",
+          {
+            headers: {
+              authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            },
+          }
+        );
+        setTodos(data);
+      } catch (error) {
+        setTodos([]);
+      }
+    };
+    allTodo();
   }, [singleTask, todos]);
 
   const handleDelete = (id) => {
@@ -41,85 +58,10 @@ const TodoList = () => {
   };
 
   return (
-    // <div className="overflow-x-auto w-full">
-    // <div className=" w-full h-full p-10 bg-slate-300">
     <div>
       <div className="card bg-violet-500 p-3 mb-5">
         <h2 className="card-tittle text-2xl text-white font-bold">All Task</h2>
       </div>
-      {/* <table className="table w-full">
-        <thead>
-          <tr>
-            <th>
-              <label>
-                <input type="checkbox" className="checkbox" />
-              </label>
-            </th>
-            <th>Title</th>
-            <th>Description</th>
-            <th>Due Date</th>
-            <th>Action</th>
-            <th></th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {todos.map((todo) => (
-            <tr key={todo._id}>
-              <th>
-                <label>
-                  <input type="checkbox" className="checkbox" />
-                </label>
-              </th>
-              <td>
-                <div className="flex items-center space-x-3">
-                  <div>
-                    <div className="font-bold">{todo.tittle}</div>
-                  </div>
-                </div>
-              </td>
-              <td>{todo.des}</td>
-              <td>{todo.date}</td>
-              <td>
-                <Link to={`edittodo/${todo._id}`}>
-                  <span className="text-xl">
-                    <CiEdit />
-                  </span>
-                </Link>
-              </td>
-              <td>
-                <label
-                  htmlFor="delete-modal"
-                  className="text-error btn btn-outline"
-                  onClick={() => setSingleTask(todo)}
-                >
-                  <RiDeleteBinLine />
-                </label>
-              </td>
-              <th>
-                <label
-                  htmlFor="details-modal"
-                  className="btn btn-ghost btn-xs"
-                  onClick={() => setSingleTask(todo)}
-                >
-                  details
-                </label>
-              </th>
-            </tr>
-          ))}
-        </tbody>
-        <tfoot>
-          <tr>
-            <th></th>
-            <th>Title</th>
-            <th>Description</th>
-            <th>Due Date</th>
-            <th>Action</th>
-            <th></th>
-            <th></th>
-          </tr>
-        </tfoot>
-      </table> */}
 
       <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5">
         {todos.map((todo) => (
