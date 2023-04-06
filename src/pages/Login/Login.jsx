@@ -22,11 +22,6 @@ const Login = () => {
     const email = e.target.email.value;
     const password = e.target.password.value;
     signInWithEmailAndPassword(email, password);
-    // const { data } = await axios.post(
-    //   "https://hellwet-todo-backend.onrender.com/login",
-    //   { email }
-    // );
-    // localStorage.setItem("accessToken", data.accessToken);
 
     fetch("https://hellwet-todo-backend.onrender.com/login", {
       method: "POST",
@@ -69,6 +64,7 @@ const Login = () => {
                   name="password"
                   placeholder="Enter your Password"
                 />
+                <p className="text-white">{error ? error.message : ""}</p>
                 <div className="card-actions justify-center">
                   <button
                     className="btn w-full hover:opacity-70 text-white bg-gradient-to-r from-violet-800 to-fuchsia-800 border-0"
