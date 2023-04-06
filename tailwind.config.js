@@ -7,10 +7,10 @@ export default {
       serif: ["Roboto", "sans-serif"],
     },
     extend: {
-      colors: {
-        primary: "#659ffc",
-        secondary: "#450085",
-      },
+      // colors: {
+      //   primary: "#659ffc",
+      //   secondary: "#450085",
+      // },
     },
   },
   plugins: [require("daisyui")],
